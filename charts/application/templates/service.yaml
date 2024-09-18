@@ -4,12 +4,12 @@ metadata:
   name: {{ include "chart.fullname" . }}
   labels:
     {{- include "chart.labels" . | nindent 4 }}
-{{- with .Values.service.annotations }}
+{{- with .Values.connectivity.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.connectivity.service.type }}
   ports:
     {{- range .Values.connectivity.ports }}
     {{ if .servicePort }}
