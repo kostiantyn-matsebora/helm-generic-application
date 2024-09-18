@@ -53,6 +53,8 @@ connectivity:
 
 
 ingress:
+  service:
+    port: 80
   enabled: false
   className:  # cilium, nginx etc.
   annotations: {}
