@@ -7,6 +7,7 @@ Such as:
 * [`Nordlynx`](https://support.nordvpn.com/hc/en-us/articles/19564565879441-What-is-NordLynx)  VPN container as a sidecar.
 * Ability to define PersistentVolumeClaim for the application.
 * Ability to define environment variables for the application  as a secret.
+* Multiple port definitions for the service.
 
 For more information check [`charts/application/values.yaml`](charts/application/values.yaml) file.
 
@@ -40,6 +41,25 @@ persistence:
  ```yaml
 secretEnv:
   VAR_NAME: variable value
+ ```
+
+### Multiple port definitions
+
+ ```yaml
+connectivity:
+  hostNetwork: false
+  service:
+    type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      containerPort: 80
+      servicePort: 80
+      nodePort: 
+  probes:
+    readiness:
+      port: http
+  annotations: {}
  ```
 
 ## Usage
