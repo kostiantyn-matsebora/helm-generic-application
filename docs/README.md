@@ -1,4 +1,4 @@
-# Generic helm chart for application
+# Generic application with features
 
 Repository contains generic helm chart for deploying any application, based on the official Helm chart for Kubernetes, but with some useful modifications.
 
