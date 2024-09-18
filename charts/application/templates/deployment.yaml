@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.nordlynx.enabled }}
+      initContainers:
+        - name: nordlynx
+          image: bubuntux/nordlynx:2023-06-01
+          restartPolicy: Always
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+            privileged: true
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
+          envFrom:
+          - secretRef:
+              name: nordlynx-{{ include "chart.fullname" . }}
+          env:
+          {{- if .Values.nordlynx.netLocal }}
+            - name: NET_LOCAL
+              value: {{ .Values.nordlynx.netLocal }}
+          {{- end }}
+          {{ if .Values.nordlynx.dns }}
+            - name: DNS
+              value: {{ .Values.nordlynx.dns }}
+          {{- end }}
+          {{ if .Values.nordlynx.query }}
+            - name: QUERY
+              value: {{ .Values.nordlynx.query }}
+          {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{- range .Values.connectivity.ports }}
+            - name: {{ .name }}
+              containerPort: {{ .containerPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+          {{- if .Values.connectivity.probes.liveness  }}
+          livenessProbe:
+            {{ toYaml .Values.connectivity.probes.liveness |  nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.connectivity.probes.readiness.port }}    
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or (.Values.volumeMounts) (.Values.pvc.enabled) }}
+          volumeMounts:
+            {{- if .Values.pvc.enabled }}
+            - mountPath: {{ .Values.pvc.mountPath }}
+              name: {{ include "chart.fullname" . }}
+            {{- end }}
+            {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "chart.fullname" . }}
+          - secretRef:
+              name: {{ include "chart.fullname" . }}
+          {{- if .Values.entryPoint.override }}
+          command: {{ .Values.entryPoint.command }}
+          args: {{ .Values.entryPoint.args }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or (.Values.volumes) (.Values.pvc.enabled) }}
+      volumes:
+      {{- if .Values.pvc.enabled }}
+        - name: {{ include "chart.fullname" . }}
+          persistentVolumeClaim:
+            claimName: {{ include "chart.fullname" . }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}

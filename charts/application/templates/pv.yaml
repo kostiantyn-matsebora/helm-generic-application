@@ -1,0 +1,23 @@
+{{- if .Values.pvc.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    app: {{ .Release.Name }}
+    version: {{ .Chart.AppVersion }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ template "chart.name" . }}
+    heritage: {{ .Release.Service }}  
+spec:
+  volumeMode: Filesystem
+  accessModes:
+  {{ toYaml .Values.pvc.accessModes | nindent 4}}
+  storageClassName: {{ .Values.pvc.storageClassName }}
+  capacity:
+    storage: {{ .Values.pvc.size }}
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: {{ include "chart.fullname" . }}
+{{- end }}

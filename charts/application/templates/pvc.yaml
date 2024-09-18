@@ -1,0 +1,20 @@
+{{- if .Values.pvc.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    app: {{ .Release.Name }}
+    version: {{ .Chart.AppVersion }}
+    chart: {{ template "chart.chart" . }}
+    release: {{ template "chart.name" . }}
+    heritage: {{ .Release.Service }}  
+spec:
+  accessModes:
+  {{ toYaml .Values.pvc.accessModes | nindent 4}}
+  storageClassName: {{ .Values.pvc.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.pvc.size }}
+  volumeName: {{ include "chart.fullname" . }}
+{{- end }}      
