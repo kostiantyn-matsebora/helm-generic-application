@@ -110,7 +110,7 @@ deployment:
     type: RollingUpdate
   terminationGracePeriodSeconds: 15
 system:
-  name:
+  name: application
 
 pvc:
   enabled: false
