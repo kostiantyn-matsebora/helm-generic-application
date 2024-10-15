@@ -123,6 +123,8 @@ pvc:
   - ReadWriteOnce
   volumeHandle:
 
+dnsPolicy:
+
 # nordlynx sidecar container configuration
 nordlynx:
   enabled: false
