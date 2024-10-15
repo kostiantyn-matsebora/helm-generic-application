@@ -76,7 +76,7 @@ spec:
           {{- end }}
           readinessProbe:
             tcpSocket:
-              port: {{ .Values.connectivity.probes.readiness.port }}    
+              port: {{ .Values.connectivity.probes.readiness.port }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if or (.Values.volumeMounts) (.Values.pvc.enabled) }}
@@ -122,3 +122,6 @@ spec:
       {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- end }}
