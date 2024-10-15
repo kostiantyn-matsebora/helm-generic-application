@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning].
 
 - Ability to define dnsPolicy for deployment
 
+## [0.2.0] - 2024-09-18
+
+### Added
+
+- Added ability to define runtime class name for workload
+
 ## [0.1.0] - 2024-09-18
 
 - initial release

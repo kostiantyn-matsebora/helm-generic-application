@@ -135,3 +135,6 @@ nordlynx:
        # example: 10.43.0.10,192.168.1.1
   query: # Query for the api nordvpn
          # example: filters\\[country_id\]=225
+
+# Name of runtime class to use for the pod https://kubernetes.io/docs/concepts/containers/runtime-class/
+runtimeClassName:
