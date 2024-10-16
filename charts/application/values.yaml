@@ -48,7 +48,11 @@ connectivity:
       nodePort: 
   probes:
     readiness:
-      port: http
+      tcpSocket:
+        port: http
+    liveness:
+      tcpSocket:
+        port: http
   annotations: {}
 
 
