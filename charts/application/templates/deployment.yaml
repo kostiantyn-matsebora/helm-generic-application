@@ -63,6 +63,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          hostNetwork: {{ .Values.connectivity.hostNetwork }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -77,9 +78,10 @@ spec:
           livenessProbe:
             {{ toYaml .Values.connectivity.probes.liveness |  nindent 12 }}
           {{- end }}
+          {{- if .Values.connectivity.probes.readiness  }}
           readinessProbe:
-            tcpSocket:
-              port: {{ .Values.connectivity.probes.readiness.port }}
+            {{ toYaml .Values.connectivity.probes.readiness |  nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if or (.Values.volumeMounts) (.Values.pvc.enabled) }}

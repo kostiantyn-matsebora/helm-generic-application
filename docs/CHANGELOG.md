@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning].
 ### Added
 
 - Ability to define dnsPolicy for deployment
+- Ability to define hostNetwork for deployment
+- Ability to define liveness and readiness probes for deployment
 
 ## [0.2.0] - 2024-09-18
 
