@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.1] - 2024-10-16
+
+### Fixed
+
+- Fixed issue with `hostNetwork` not being applied to deployment.
+
 ## [0.3.0] - 2024-10-13
 
 ### Added

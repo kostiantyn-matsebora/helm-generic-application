@@ -22,6 +22,7 @@ spec:
       labels:
         {{- include "chart.selectorLabels" . | nindent 8 }}
     spec:
+      hostNetwork: {{ .Values.connectivity.hostNetwork }}
       {{- if .Values.runtimeClassName }}
       runtimeClassName: {{ .Values.runtimeClassName }}
       {{- end }}
@@ -63,7 +64,6 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          hostNetwork: {{ .Values.connectivity.hostNetwork }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
