@@ -25,6 +25,11 @@ serviceAccount:
 
 podAnnotations: {}
 
+# Extra labels merged onto the pod template, in addition to the chart's own
+# selector labels. Not used for the Deployment's selector, so it's safe to
+# add or change without recreating the Deployment.
+podLabels: {}
+
 podSecurityContext: {}
   # fsGroup: 2000
 
