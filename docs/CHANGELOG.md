@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.4.0] - 2026-10-16
+
+### Added
+
+- Ability to define extra `podLabels`, merged onto the pod template without
+  touching the Deployment's selector.
+
 ## [0.3.1] - 2024-10-16
 
 ### Fixed
